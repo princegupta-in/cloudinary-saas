@@ -6,8 +6,6 @@ const isPublicRoute = createRouteMatcher([
     "/signup",
     "/",
     "/home",]);
-const isPrivateRoute = createRouteMatcher([
-    "/api/videos",]);
 
 const isPublicApiRoute = createRouteMatcher([
     "/api/videos",]);
@@ -33,7 +31,7 @@ export default clerkMiddleware(async (auth, req) => {
             return NextResponse.redirect(new URL("/signin", req.url))
         }
         //if the request is for a protected API and the user is not logged in
-        if (isApiRequest && !isPublicRoute(req)) {
+        if (isApiRequest && !isPublicApiRoute(req)) {
             return NextResponse.redirect(new URL("/signin", req.url))
         }
 
@@ -42,10 +40,5 @@ export default clerkMiddleware(async (auth, req) => {
 })
 
 export const config = {
-    matcher: [
-        // Skip Next.js internals and all static files, unless found in search params
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-        // Always run for API routes
-        '/(api|trpc)(.*)',
-    ],
+    matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 }
